@@ -71,6 +71,11 @@ class _RegisterViewState extends State<RegisterView> {
                             email: email,
                             password: password,
                           );
+                          final user = FirebaseAuth.instance.currentUser;
+                          await user?.sendEmailVerification();
+                          Navigator.of(context).pushNamed(
+                            verifyEmailRoute,
+                          );
                           devtools.log(userCredential.toString());
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'email-already-in-use') {
@@ -81,7 +86,7 @@ class _RegisterViewState extends State<RegisterView> {
                           } else if (e.code == 'invalid-email') {
                             await showErrorDialog(
                               context,
-                              'Invalid email',
+                              'This is an invalid email address',
                             );
                           } else if (e.code == 'weak-password') {
                             await showErrorDialog(

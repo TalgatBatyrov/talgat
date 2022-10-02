@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                 } else if (e.code == 'invalid-email') {
                   await showErrorDialog(
                     context,
-                    'Invalid email',
+                    'This is an invalid email address',
                   );
                 } else {
                   await showErrorDialog(
