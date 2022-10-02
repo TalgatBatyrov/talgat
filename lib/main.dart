@@ -1,5 +1,6 @@
 import 'dart:developer' as devtools show log;
 
+import 'package:basic_registration/constants/routes.dart';
 import 'package:basic_registration/views/login_view.dart';
 import 'package:basic_registration/views/register_view.dart';
 import 'package:basic_registration/views/verify_email_view.dart';
@@ -25,9 +26,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => const HomePage(),
-        '/login': (context) => const LoginView(),
-        '/register': (context) => const RegisterView(),
-        '/notes': (context) => const NotesView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        notesRoute: (context) => const NotesView(),
       },
     );
   }
@@ -133,7 +134,7 @@ class _NotesViewState extends State<NotesView> {
                     await FirebaseAuth.instance.signOut();
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/login',
+                      loginRoute,
                       (route) => false,
                     );
                   } else {

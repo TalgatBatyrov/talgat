@@ -1,4 +1,5 @@
 import 'dart:developer' as devtools show log;
+import 'package:basic_registration/constants/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +36,7 @@ class _RegisterViewState extends State<RegisterView> {
         title: const Text('Register'),
       ),
       body: FutureBuilder(
-          future: Future.delayed(
-            const Duration(seconds: 2),
-            () {
-              Firebase.initializeApp();
-            },
-          ),
+          future: Firebase.initializeApp(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
@@ -92,7 +88,7 @@ class _RegisterViewState extends State<RegisterView> {
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/login',
+                          loginRoute,
                           (route) => false,
                         );
                       },
