@@ -83,10 +83,19 @@ class _RegisterViewState extends State<RegisterView> {
                             print('Weak password');
                           }
                         } catch (e) {
-                          print(e.toString());
+                          print('lkmlm');
                         }
                       },
                       child: const Text('Register'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/login',
+                          (route) => false,
+                        );
+                      },
+                      child: const Text('Already register? Login here!'),
                     ),
                   ],
                 );
