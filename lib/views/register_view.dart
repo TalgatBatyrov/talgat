@@ -1,5 +1,6 @@
 import 'dart:developer' as devtools show log;
 import 'package:basic_registration/constants/routes.dart';
+import 'package:basic_registration/utilities/show_error_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -73,14 +74,31 @@ class _RegisterViewState extends State<RegisterView> {
                           devtools.log(userCredential.toString());
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'email-already-in-use') {
-                            devtools.log('Email already in use');
+                            await showErrorDialog(
+                              context,
+                              'Email already in use',
+                            );
                           } else if (e.code == 'invalid-email') {
-                            devtools.log('Invalid email');
+                            await showErrorDialog(
+                              context,
+                              'Invalid email',
+                            );
                           } else if (e.code == 'weak-password') {
-                            devtools.log('Weak password');
+                            await showErrorDialog(
+                              context,
+                              'Weak password',
+                            );
+                          } else {
+                            await showErrorDialog(
+                              context,
+                              'Error: ${e.code}',
+                            );
                           }
                         } catch (e) {
-                          devtools.log('lkmlm');
+                          await showErrorDialog(
+                            context,
+                            e.toString(),
+                          );
                         }
                       },
                       child: const Text('Register'),
