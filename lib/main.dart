@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomePage(),
         '/login': (context) => const LoginView(),
         '/register': (context) => const RegisterView(),
+        '/notes': (context) => const NotesView(),
       },
     );
   }
@@ -114,9 +115,7 @@ class _NotesViewState extends State<NotesView> {
         title: const Text('Main UI'),
         actions: [
           PopupMenuButton<MenuAction>(
-            icon: const Icon(Icons.settings),
             onSelected: (value) async {
-              devtools.log(value.toString());
               switch (value) {
                 case MenuAction.one:
                   setState(() {
@@ -138,10 +137,8 @@ class _NotesViewState extends State<NotesView> {
                       (route) => false,
                     );
                   } else {
-                    devtools.log('uff');
+                    devtools.log('shouldLogout: $shouldLogout');
                   }
-
-                  devtools.log('shouldLogout: $shouldLogout');
                   break;
                 default:
               }
@@ -162,13 +159,6 @@ class _NotesViewState extends State<NotesView> {
                 ),
               ];
             },
-          ),
-          IconButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
-            tooltip: 'Log out',
-            icon: const Icon(Icons.logout_outlined),
           ),
         ],
       ),
