@@ -2,6 +2,7 @@ import 'package:basic_registration/services/auth/auth_exceptions.dart';
 import 'package:basic_registration/services/auth/auth_provider.dart';
 import 'package:basic_registration/services/auth/auth_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
@@ -17,7 +18,7 @@ class FirebaseAuthProvider implements AuthProvider {
       } else {
         throw UserNotLoggedInAuthException();
       }
-    } on FirebaseException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         throw EmailAlreadyInUseAuthException();
       } else if (e.code == 'invalid-email') {
@@ -86,5 +87,10 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {
       throw UserNotLoggedInAuthException();
     }
+  }
+
+  @override
+  Future<void> initialise() async {
+    await Firebase.initializeApp();
   }
 }

@@ -1,8 +1,8 @@
-import 'dart:developer' as devtools show log;
 import 'package:basic_registration/constants/routes.dart';
+import 'package:basic_registration/services/auth/auth_exceptions.dart';
+import 'package:basic_registration/services/auth/auth_service.dart';
 import 'package:basic_registration/utilities/show_error_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
@@ -37,7 +37,7 @@ class _RegisterViewState extends State<RegisterView> {
         title: const Text('Register'),
       ),
       body: FutureBuilder(
-          future: Firebase.initializeApp(),
+          future: AuthService.firebase().initialise(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
@@ -66,43 +66,40 @@ class _RegisterViewState extends State<RegisterView> {
                         final password = _password.text;
 
                         try {
-                          final userCredential = await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
+                          await AuthService.firebase().createUser(
                             email: email,
                             password: password,
                           );
-                          final user = FirebaseAuth.instance.currentUser;
-                          await user?.sendEmailVerification();
+                          // await FirebaseAuth.instance
+                          //     .createUserWithEmailAndPassword(
+                          //   email: email,
+                          //   password: password,
+                          // );
+
+                          AuthService.firebase().sendEmailVerification();
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pushNamed(
                             verifyEmailRoute,
                           );
-                          devtools.log(userCredential.toString());
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'email-already-in-use') {
-                            await showErrorDialog(
-                              context,
-                              'Email already in use',
-                            );
-                          } else if (e.code == 'invalid-email') {
-                            await showErrorDialog(
-                              context,
-                              'This is an invalid email address',
-                            );
-                          } else if (e.code == 'weak-password') {
-                            await showErrorDialog(
-                              context,
-                              'Weak password',
-                            );
-                          } else {
-                            await showErrorDialog(
-                              context,
-                              'Error: ${e.code}',
-                            );
-                          }
-                        } catch (e) {
+                        } on EmailAlreadyInUseAuthException {
                           await showErrorDialog(
                             context,
-                            e.toString(),
+                            'Email already in use',
+                          );
+                        } on WeakPasswordAuthException {
+                          await showErrorDialog(
+                            context,
+                            'Weak password',
+                          );
+                        } on InvalidEmailAuthException {
+                          await showErrorDialog(
+                            context,
+                            'This is an invalid email address',
+                          );
+                        } on GenericAuthException {
+                          await showErrorDialog(
+                            context,
+                            'Failed to register',
                           );
                         }
                       },
