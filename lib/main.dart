@@ -4,7 +4,6 @@ import 'package:basic_registration/views/login_view.dart';
 import 'package:basic_registration/views/notes_view.dart';
 import 'package:basic_registration/views/register_view.dart';
 import 'package:basic_registration/views/verify_email_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 void main() {
