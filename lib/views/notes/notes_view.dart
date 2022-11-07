@@ -68,6 +68,12 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: Text(userEmail),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
@@ -135,6 +141,10 @@ class _NotesViewState extends State<NotesView> {
               return const Center(child: CircularProgressIndicator());
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
       ),
     );
   }
