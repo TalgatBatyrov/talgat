@@ -2,6 +2,7 @@ import 'dart:developer' as devtools show log;
 import 'package:basic_registration/constants/routes.dart';
 import 'package:basic_registration/enums/menu_action.dart';
 import 'package:basic_registration/services/auth/auth_service.dart';
+import 'package:basic_registration/services/crud/notes_services.dart';
 import 'package:flutter/material.dart';
 
 class NotesView extends StatefulWidget {
@@ -12,7 +13,7 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
-  String title = '';
+  String title = 's';
 
   Future<bool> _showLogoutDialog() async {
     return showDialog<bool>(
@@ -47,11 +48,25 @@ class _NotesViewState extends State<NotesView> {
     ).then((value) => value ?? false);
   }
 
+  late final NotesService _noteService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+  @override
+  void initState() {
+    _noteService = NotesService();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _noteService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Main UI'),
+        title: Text(userEmail),
         actions: [
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
@@ -101,7 +116,26 @@ class _NotesViewState extends State<NotesView> {
           ),
         ],
       ),
-      body: Text(title),
+      body: FutureBuilder(
+        future: _noteService.getOrCreateUser(email: userEmail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return StreamBuilder(
+                  stream: _noteService.allNotes,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Text('Waiting for all notes ...');
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  });
+            default:
+              return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
