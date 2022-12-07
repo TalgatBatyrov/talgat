@@ -41,7 +41,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNote = context.getArgument<DatabaseNote>();
-    print(widgetNote);
 
     if (widgetNote != null) {
       _note = widgetNote;
@@ -55,7 +54,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
+    final email = currentUser.email;
     final owner = await _notesService.getUser(email: email);
     final newNote = await _notesService.createNote(owner: owner);
     _note = newNote;
