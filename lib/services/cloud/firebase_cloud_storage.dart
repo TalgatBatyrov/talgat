@@ -8,7 +8,7 @@ class FirebaseCloudStorage {
 
   Future<void> deleteNote({required String documentId}) async {
     try {
-    await   notes.doc(documentId).delete();
+      await notes.doc(documentId).delete();
     } catch (_) {
       throw CouldNotDeleteNoteException();
     }
@@ -19,7 +19,7 @@ class FirebaseCloudStorage {
     required String text,
   }) async {
     try {
-   await   notes.doc(documentId).update({
+      await notes.doc(documentId).update({
         textFieldName: text,
       });
     } catch (_) {
@@ -34,24 +34,38 @@ class FirebaseCloudStorage {
               .where((note) => note.ownerUserId == ownerUserId),
         );
   }
+  
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserId}) async {
     try {
       return await notes
           .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
           .get()
-          .then((value) => value.docs.map((e) => CloudNote.fromSnapshot(e)));
+          .then(
+            (value) => value.docs.map(
+              (e) => CloudNote.fromSnapshot(e),
+            ),
+          );
     } catch (_) {
       throw CouldNotGetAllNotesException();
     }
   }
 
-  void createNewNote({required String ownerUserId}) async {
-    notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: '',
     });
+
+    final fetchedNote = await document.get();
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      text: '',
+    );
   }
+
+  
 
   static final FirebaseCloudStorage _shared =
       FirebaseCloudStorage._sharedInstance();
