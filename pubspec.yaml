@@ -43,6 +43,7 @@ dependencies:
   path: ^1.8.2
   cloud_firestore: ^3.5.1
   firebase_analytics: ^9.3.8
+  share_plus: ^6.3.0
 
 dev_dependencies:
   flutter_test:

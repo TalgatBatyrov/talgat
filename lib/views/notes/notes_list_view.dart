@@ -1,5 +1,4 @@
 import 'package:basic_registration/services/cloud/cloud_note.dart';
-import 'package:basic_registration/services/crud/notes_services.dart';
 import 'package:basic_registration/utilities/dialogs/delete_dialog.dart';
 import 'package:flutter/material.dart';
 
