@@ -1,8 +1,9 @@
-import 'dart:developer' as devtools show log;
+import 'package:basic_registration/services/auth/bloc/auth_bloc.dart';
+import 'package:basic_registration/services/auth/bloc/auth_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:basic_registration/constants/routes.dart';
 import 'package:basic_registration/services/auth/auth_exceptions.dart';
-import 'package:basic_registration/services/auth/auth_service.dart';
 import 'package:basic_registration/utilities/dialogs/error_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -61,29 +62,34 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await AuthService.firebase().logIn(
-                  email: email,
-                  password: password,
-                );
-
-                final user = AuthService.firebase().currentUser;
-                if (user != null) {
-                  if (user.isEmailVerified) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      notesRoute,
-                      (route) => false,
+                context.read<AuthBloc>().add(
+                      AuthEventLogIn(
+                        email,
+                        password,
+                      ),
                     );
-                  } else {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyEmailRoute,
-                      (route) => false,
-                    );
-                  }
-                }
+                // final userCredential = await AuthService.firebase().logIn(
+                //   email: email,
+                //   password: password,
+                // );
 
-                devtools.log(userCredential.toString());
+                // final user = AuthService.firebase().currentUser;
+                // if (user != null) {
+                //   if (user.isEmailVerified) {
+                //     // ignore: use_build_context_synchronously
+                //     Navigator.of(context).pushNamedAndRemoveUntil(
+                //       notesRoute,
+                //       (route) => false,
+                //     );
+                //   } else {
+                //     // ignore: use_build_context_synchronously
+                //     Navigator.of(context).pushNamedAndRemoveUntil(
+                //       verifyEmailRoute,
+                //       (route) => false,
+                //     );
+                //   }
+                // }
+
               } on UserNotFoundAuthException {
                 await showErrorDialog(
                   context,
